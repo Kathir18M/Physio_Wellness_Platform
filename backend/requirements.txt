@@ -1,0 +1,25 @@
+# ── Core ─────────────────────────────────────────────────────────
+fastapi==0.115.*
+uvicorn[standard]==0.34.*
+gunicorn==23.0.*
+pydantic[email]==2.11.*
+email-validator>=2.0.0
+pydantic-settings==2.9.*
+redis==5.2.*
+
+# ── Database (wired in Phase 2) ──────────────────────────────────
+sqlalchemy==2.0.*
+alembic==1.15.*
+asyncpg==0.30.*
+psycopg2-binary==2.9.*
+
+# ── Security (wired in Phase 2) ──────────────────────────────────
+python-jose[cryptography]==3.4.*
+passlib[argon2]==1.7.*
+
+# ── HTTP client for external integrations ────────────────────────
+httpx==0.28.*
+
+# ── Testing ──────────────────────────────────────────────────────
+pytest==8.*
+pytest-asyncio==0.25.*
