@@ -2,9 +2,19 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
 import { BookingProvider, useBooking } from "@/context/BookingContext";
 import { EXPERTS, CLINICS } from "@/data/platformData";
 import { Button } from "@/components/ui/Button";
+import {
+  VideoCamera,
+  Buildings,
+  User,
+  ArrowRight,
+  CheckCircle,
+  Clock,
+  Sparkle,
+} from "@phosphor-icons/react";
 
 function BookingStep1Content() {
   const router = useRouter();
@@ -15,23 +25,34 @@ function BookingStep1Content() {
   };
 
   return (
-    <div className="bg-slate-950 py-12 lg:py-20 text-slate-300 min-h-screen">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-10">
+    <div className="bg-[#080c14] py-12 lg:py-20 text-slate-300 min-h-[calc(100vh-5rem)] relative overflow-hidden">
+      {/* Background ambient lighting */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-teal-500/[0.04] rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-10 relative z-10">
         
-        {/* Step Progress Bar */}
-        <div className="flex items-center justify-between text-xs font-semibold text-slate-400 border-b border-slate-800 pb-4">
-          <span className="text-teal-400 font-bold">1. Select Care Type & Specialist</span>
-          <span>2. Pain Intake</span>
-          <span>3. Select Slot</span>
+        {/* Step Progress Tracker */}
+        <div className="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-white/10 pb-4">
+          <span className="text-teal-300 font-bold flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-teal-400 animate-pulse" />
+            1. Care Mode & Specialist
+          </span>
+          <span>2. Pain Assessment</span>
+          <span>3. Schedule Slot</span>
           <span>4. Confirmation</span>
         </div>
 
         <div className="text-center space-y-3">
-          <span className="rounded-full bg-teal-500/10 border border-teal-500/20 px-3.5 py-1 text-xs font-bold text-teal-400">
-            Step 1 of 4
-          </span>
-          <h1 className="text-3xl font-extrabold text-white sm:text-4xl">Choose Your Preferred Care Mode</h1>
-          <p className="text-sm text-slate-400">Select virtual tele-rehab or visit one of our modern clinics in person.</p>
+          <div className="inline-flex items-center gap-2 rounded-full bg-teal-500/10 border border-teal-500/20 px-3.5 py-1 text-xs font-mono font-semibold text-teal-300">
+            <Sparkle size={14} className="text-teal-400" />
+            <span>Step 1 of 4 — Initial Clinical Setup</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold font-display text-white tracking-tight">
+            Choose Your Preferred Care Modality
+          </h1>
+          <p className="text-sm text-slate-300 max-w-xl mx-auto">
+            Select virtual tele-rehab from home or book an in-person manual therapy session at our modern clinics.
+          </p>
         </div>
 
         {/* Care Mode Selector */}
@@ -42,19 +63,26 @@ function BookingStep1Content() {
               setCareType("ONLINE");
               setClinic(null, null);
             }}
-            className={`rounded-2xl p-6 text-left border transition-all ${
+            className={`glass-card rounded-3xl p-6 text-left border transition-all cursor-pointer ${
               state.appointmentType === "ONLINE"
-                ? "bg-slate-900 border-teal-500 ring-2 ring-teal-500/20 shadow-xl"
-                : "bg-slate-900/60 border-slate-800 hover:border-slate-700"
+                ? "bg-[#0e1526] border-teal-400 ring-2 ring-teal-400/30 shadow-[0_0_30px_rgba(45,212,191,0.2)]"
+                : "border-white/10 hover:border-white/20"
             }`}
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/10 text-teal-400 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 rounded-2xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                <VideoCamera size={24} weight="bold" />
+              </div>
+              {state.appointmentType === "ONLINE" && (
+                <CheckCircle size={20} className="text-teal-400" weight="fill" />
+              )}
             </div>
-            <h3 className="text-lg font-bold text-white mb-1">Virtual Video Consultation</h3>
-            <p className="text-xs text-slate-400">1-on-1 HD video session from home with movement & posture evaluation.</p>
+            <h3 className="text-lg font-bold font-display text-white mb-1">
+              Virtual Telehealth Session
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              1-on-1 HD video consult with live motion assessment, biomechanical feedback, and digital rehab roadmap.
+            </p>
           </button>
 
           <button
@@ -63,72 +91,91 @@ function BookingStep1Content() {
               setCareType("CLINIC");
               setClinic(CLINICS[0].id, CLINICS[0].name);
             }}
-            className={`rounded-2xl p-6 text-left border transition-all ${
+            className={`glass-card rounded-3xl p-6 text-left border transition-all cursor-pointer ${
               state.appointmentType === "CLINIC"
-                ? "bg-slate-900 border-teal-500 ring-2 ring-teal-500/20 shadow-xl"
-                : "bg-slate-900/60 border-slate-800 hover:border-slate-700"
+                ? "bg-[#0e1526] border-teal-400 ring-2 ring-teal-400/30 shadow-[0_0_30px_rgba(45,212,191,0.2)]"
+                : "border-white/10 hover:border-white/20"
             }`}
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                <Buildings size={24} weight="bold" />
+              </div>
+              {state.appointmentType === "CLINIC" && (
+                <CheckCircle size={20} className="text-teal-400" weight="fill" />
+              )}
             </div>
-            <h3 className="text-lg font-bold text-white mb-1">In-Clinic Hands-On Session</h3>
-            <p className="text-xs text-slate-400">Manual therapy & advanced electrotherapy equipment at our central clinic.</p>
+            <h3 className="text-lg font-bold font-display text-white mb-1">
+              In-Clinic Manual Therapy
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              In-person spinal manipulation, electrotherapy, and joint mobilization at our state-of-the-art wellness centers.
+            </p>
           </button>
         </div>
 
         {/* Clinic Location Picker (If CLINIC selected) */}
         {state.appointmentType === "CLINIC" && (
-          <div className="rounded-2xl bg-slate-900 p-6 border border-slate-800 space-y-4">
-            <h3 className="text-sm font-bold text-white">Select Clinic Facility</h3>
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="glass-card rounded-3xl p-6 border border-white/10 space-y-4"
+          >
+            <h3 className="text-sm font-bold font-display text-white">Select Clinic Location</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {CLINICS.map((clinic) => (
                 <button
                   key={clinic.id}
                   type="button"
                   onClick={() => setClinic(clinic.id, clinic.name)}
-                  className={`rounded-xl p-4 text-left border transition-all ${
+                  className={`rounded-2xl p-4 text-left border transition-all cursor-pointer ${
                     state.clinicId === clinic.id
-                      ? "bg-slate-800 border-teal-500 text-white"
-                      : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white"
+                      ? "bg-[#162035] border-teal-400 text-white font-semibold"
+                      : "bg-[#080c14]/60 border-white/10 text-slate-400 hover:text-white"
                   }`}
                 >
-                  <p className="text-sm font-bold text-white">{clinic.name}</p>
-                  <p className="text-xs text-slate-400 mt-1">{clinic.city}</p>
+                  <p className="text-sm font-bold font-display text-white">{clinic.name}</p>
+                  <p className="text-xs text-slate-400 font-mono mt-1">{clinic.city}</p>
                 </button>
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
 
-        {/* Therapist Selection */}
-        <div className="rounded-2xl bg-slate-900 p-6 border border-slate-800 space-y-4">
-          <h3 className="text-sm font-bold text-white">Select Your Physical Therapy Specialist</h3>
+        {/* Specialist Selection */}
+        <div className="glass-card rounded-3xl p-6 border border-white/10 space-y-4">
+          <h3 className="text-sm font-bold font-display text-white">Select Lead Physical Therapist</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {EXPERTS.map((expert) => (
               <button
                 key={expert.id}
                 type="button"
                 onClick={() => setTherapist(expert.id, expert.name)}
-                className={`rounded-xl p-4 text-left border transition-all ${
+                className={`rounded-2xl p-4 text-left border transition-all cursor-pointer ${
                   state.therapistId === expert.id
-                    ? "bg-slate-800 border-teal-500 text-white"
-                    : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white"
+                    ? "bg-[#162035] border-teal-400 text-white font-semibold shadow-md"
+                    : "bg-[#080c14]/60 border-white/10 text-slate-400 hover:text-white"
                 }`}
               >
-                <p className="text-sm font-bold text-white">{expert.name}</p>
-                <p className="text-xs text-teal-400 mt-1">{expert.role}</p>
+                <div className="flex items-center gap-2 mb-1">
+                  <User size={16} className={state.therapistId === expert.id ? "text-teal-400" : "text-slate-500"} />
+                  <p className="text-sm font-bold font-display text-white">{expert.name}</p>
+                </div>
+                <p className="text-xs text-teal-300 font-mono">{expert.role}</p>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Navigation Action */}
+        {/* Next Step Action */}
         <div className="flex justify-end pt-4">
-          <Button onClick={handleNext} variant="primary" size="lg">
-            Continue to Step 2: Pain Intake →
+          <Button
+            onClick={handleNext}
+            variant="primary"
+            size="lg"
+            rightIcon={<ArrowRight size={18} weight="bold" />}
+          >
+            Continue to Step 2: Pain Intake
           </Button>
         </div>
 

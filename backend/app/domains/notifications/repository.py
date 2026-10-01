@@ -20,7 +20,7 @@ class NotificationRepository:
 
     async def create(self, notification: Notification) -> Notification:
         self.db.add(notification)
-        await self.db.commit()
+        await self.db.flush()
         await self.db.refresh(notification)
         return notification
 
@@ -69,7 +69,7 @@ class NotificationRepository:
 
         notification.status = NotificationStatus.READ
         notification.read_at = datetime.now(timezone.utc)
-        await self.db.commit()
+        await self.db.flush()
         await self.db.refresh(notification)
         return notification
 
@@ -82,7 +82,7 @@ class NotificationRepository:
             .values(status=NotificationStatus.READ, read_at=now, updated_at=now)
         )
         result = await self.db.execute(stmt)
-        await self.db.commit()
+        await self.db.flush()
         return result.rowcount
 
     async def list_failed_for_retry(self, limit: int = 50) -> List[Notification]:
@@ -109,6 +109,6 @@ class NotificationRepository:
         elif status == NotificationStatus.FAILED:
             notification.retry_count += 1
             notification.error_message = error_message
-        await self.db.commit()
+        await self.db.flush()
         await self.db.refresh(notification)
         return notification

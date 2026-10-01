@@ -65,11 +65,18 @@ class Settings(BaseSettings):
     # ── Logging ──────────────────────────────────────────────────
     LOG_LEVEL: str = "INFO"
 
-
     @property
     def database_url_sync(self) -> str:
         """Return the synchronous variant of the database URL (for Alembic)."""
         return self.DATABASE_URL.replace("+asyncpg", "+psycopg2")
+
+    def model_post_init(self, __context: object) -> None:
+        """Enforce strict security validation on application configuration."""
+        if self.ENVIRONMENT == "production" and "dev-secret-key" in self.JWT_SECRET_KEY:
+            raise ValueError(
+                "Refusing to boot in production with default development JWT_SECRET_KEY. "
+                "Set a secure JWT_SECRET_KEY environment variable."
+            )
 
 
 settings = Settings()

@@ -2,6 +2,15 @@
 
 import React, { useState } from "react";
 import { aiService, ExerciseAssistantResult, PostureAnalysisResult } from "@/services/ai";
+import {
+  Brain,
+  Camera,
+  PaperPlaneRight,
+  ShieldCheck,
+  CheckCircle,
+  WarningCircle,
+  Sparkle,
+} from "@phosphor-icons/react";
 
 export function AIAssistantWidget() {
   const [question, setQuestion] = useState<string>("");
@@ -21,7 +30,6 @@ export function AIAssistantWidget() {
       setResponse(res);
     } catch (err) {
       console.error("AI Assistant error:", err);
-      alert("AI Assistant temporarily unavailable. Please consult your physical therapist.");
     } finally {
       setLoading(false);
     }
@@ -47,19 +55,21 @@ export function AIAssistantWidget() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/30 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-6">
-      <div className="flex items-center justify-between border-b border-indigo-500/20 pb-4">
+    <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl space-y-6 relative overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-4 gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400 font-bold text-lg">
-            🤖
+          <div className="w-10 h-10 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-lg">
+            <Brain size={22} weight="bold" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
-              <span>AI Exercise & Movement Assistant</span>
-              <span className="text-[10px] bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 px-2 py-0.5 rounded-full font-mono">
-                NON-DIAGNOSTIC ASSISTANT
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-bold font-display text-white">
+                AI Kinematic & Form Assistant
+              </h2>
+              <span className="text-[10px] bg-teal-500/10 border border-teal-500/30 text-teal-300 px-2 py-0.5 rounded-full font-mono">
+                NON-DIAGNOSTIC TELEMETRY
               </span>
-            </h2>
+            </div>
             <p className="text-xs text-slate-400">
               Form guidance, posture analysis, and routine support verified by clinical safeguards.
             </p>
@@ -69,17 +79,18 @@ export function AIAssistantWidget() {
         <button
           onClick={handleRunPostureCheck}
           disabled={analyzingPosture}
-          className="px-4 py-2 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-300 text-xs font-semibold rounded-xl transition-all disabled:opacity-50"
+          className="px-4 py-2 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 text-teal-300 text-xs font-mono font-semibold rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer self-start sm:self-auto"
         >
-          {analyzingPosture ? "Analyzing Landmarks..." : "📷 AI Posture Check"}
+          <Camera size={16} />
+          <span>{analyzingPosture ? "Analyzing Landmarks..." : "Run AI Posture Check"}</span>
         </button>
       </div>
 
       {/* Posture Result Box */}
       {postureResult && (
-        <div className="p-4 bg-slate-950/80 border border-indigo-500/30 rounded-2xl space-y-3 text-xs">
+        <div className="p-4 bg-[#05080f] border border-teal-500/30 rounded-2xl space-y-3 text-xs">
           <div className="flex items-center justify-between">
-            <span className="font-bold text-indigo-300">Posture Alignment Score</span>
+            <span className="font-bold font-display text-teal-300">Posture Alignment Score</span>
             <span className="font-mono text-lg font-bold text-teal-400">
               {postureResult.alignment_score} / 100
             </span>
@@ -91,13 +102,15 @@ export function AIAssistantWidget() {
           <div className="space-y-1">
             <span className="font-semibold text-slate-300 block">Form Recommendations:</span>
             {postureResult.recommendations.map((rec, i) => (
-              <p key={i} className="text-slate-400 text-[11px]">
-                • {rec}
+              <p key={i} className="text-slate-400 text-[11px] flex items-center gap-1.5">
+                <CheckCircle size={12} className="text-teal-400" weight="fill" />
+                <span>{rec}</span>
               </p>
             ))}
           </div>
-          <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-[10px] text-amber-300 italic">
-            ⚠️ {postureResult.disclaimer}
+          <div className="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[10px] text-amber-300 flex items-center gap-1.5 font-mono">
+            <WarningCircle size={14} className="flex-shrink-0" />
+            <span>{postureResult.disclaimer}</span>
           </div>
         </div>
       )}
@@ -110,26 +123,28 @@ export function AIAssistantWidget() {
             placeholder="Ask AI assistant about exercise form, rep pacing, or posture..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            className="flex-1 px-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            className="flex-1 px-4 py-2.5 bg-[#080c14] border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 font-sans transition-colors"
           />
           <button
             type="submit"
             disabled={loading}
-            className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition-colors disabled:opacity-50"
+            className="px-5 py-2.5 bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 font-bold text-xs rounded-xl hover:brightness-110 transition-all disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
           >
-            {loading ? "Asking AI..." : "Ask Assistant"}
+            <span>{loading ? "Analyzing..." : "Ask Assistant"}</span>
+            <PaperPlaneRight size={14} weight="bold" />
           </button>
         </div>
       </form>
 
       {/* AI Response Output */}
       {response && (
-        <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-3 text-xs">
-          <p className="text-slate-200 leading-relaxed">{response.response_text}</p>
-          <div className="p-2.5 bg-slate-900 border border-slate-800 rounded-xl text-[11px] text-teal-400 font-medium">
-            💡 {response.safety_guidance}
+        <div className="p-4 bg-[#05080f] border border-white/10 rounded-2xl space-y-3 text-xs">
+          <p className="text-slate-200 leading-relaxed font-sans">{response.response_text}</p>
+          <div className="p-2.5 bg-teal-500/10 border border-teal-500/20 rounded-xl text-[11px] text-teal-300 font-mono flex items-center gap-2">
+            <ShieldCheck size={16} className="text-teal-400" />
+            <span>{response.safety_guidance}</span>
           </div>
-          <p className="text-[10px] text-slate-500 italic">{response.disclaimer}</p>
+          <p className="text-[10px] text-slate-500 italic font-mono">{response.disclaimer}</p>
         </div>
       )}
     </div>

@@ -25,6 +25,11 @@ class HealthResponse(BaseModel):
 
 
 
+from typing import Any, Generic, TypeVar
+
+T = TypeVar("T")
+
+
 class ErrorDetail(BaseModel):
     """Machine-readable error detail."""
 
@@ -45,3 +50,12 @@ class SuccessResponse(BaseModel):
     success: bool = True
     message: str = "Operation completed successfully."
     data: Any | None = None
+
+
+class ResponseEnvelope(BaseModel, Generic[T]):
+    """Standard response envelope for typed data outputs across all domain APIs."""
+
+    success: bool = True
+    message: str = "Success"
+    data: T
+

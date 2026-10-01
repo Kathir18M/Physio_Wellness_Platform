@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
 import { appointmentService } from "@/services/appointment";
 import { Appointment } from "@/types/appointment";
 import { AppointmentCard } from "@/components/dashboard/AppointmentCard";
@@ -10,6 +11,15 @@ import { ExerciseCard, ExerciseItem } from "@/components/dashboard/ExerciseCard"
 import { ProgressCard } from "@/components/dashboard/ProgressCard";
 import { NotificationCard, NotificationItem } from "@/components/dashboard/NotificationCard";
 import { AIAssistantWidget } from "@/components/dashboard/AIAssistantWidget";
+import {
+  Sparkle,
+  CalendarCheck,
+  Barbell,
+  BellRinging,
+  ArrowRight,
+  User,
+  SealCheck,
+} from "@phosphor-icons/react";
 
 export default function DashboardOverviewPage() {
   const [upcomingAppointment, setUpcomingAppointment] = useState<Appointment | null>(null);
@@ -76,7 +86,6 @@ export default function DashboardOverviewPage() {
         }
       } catch (err) {
         if (isMounted) {
-          // Fallback mock appointment for preview
           setUpcomingAppointment({
             id: "apt-101",
             patient_id: "patient-1",
@@ -117,31 +126,33 @@ export default function DashboardOverviewPage() {
   return (
     <div className="space-y-8">
       {/* 1. Welcome Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+      <div className="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl border border-white/10">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
 
-        <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 text-xs font-semibold mb-3">
-            <span>✨ Welcome back, Patient</span>
+        <div className="relative z-10 max-w-2xl space-y-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-mono">
+            <Sparkle size={14} className="text-teal-400" />
+            <span>Welcome Back to Care</span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-2">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-white font-display tracking-tight">
             Your Recovery Progress is on Track!
           </h1>
-          <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            You've completed <span className="text-teal-400 font-semibold">14 consecutive days</span> of your lumbar rehabilitation routine. Keep up the great work today!
+          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+            You&apos;ve completed <span className="text-teal-300 font-mono font-bold">14 consecutive days</span> of your lumbar rehabilitation routine. Keep up the great momentum today!
           </p>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               href="/dashboard/exercises"
-              className="px-5 py-2.5 bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 font-bold rounded-xl text-xs hover:from-teal-400 hover:to-cyan-400 transition-all shadow-lg shadow-teal-500/20"
+              className="px-5 py-2.5 bg-gradient-to-r from-teal-500 to-cyan-400 text-slate-950 font-bold rounded-xl text-xs hover:brightness-110 transition-all shadow-lg shadow-teal-500/20 flex items-center gap-1.5"
             >
-              Start Today's Exercises (17 mins) →
+              <span>Start Today&apos;s Exercises (17 mins)</span>
+              <ArrowRight size={14} weight="bold" />
             </Link>
             <Link
               href="/booking"
-              className="px-5 py-2.5 bg-slate-800 border border-slate-700 text-slate-200 font-medium rounded-xl text-xs hover:bg-slate-700 transition-all"
+              className="px-5 py-2.5 bg-[#162035] border border-white/10 text-slate-200 font-semibold rounded-xl text-xs hover:bg-[#1f2b45] transition-all"
             >
               Book Follow-up Session
             </Link>
@@ -149,10 +160,10 @@ export default function DashboardOverviewPage() {
         </div>
       </div>
 
-      {/* 2. AI Movement & Exercise Assistant Widget */}
+      {/* 2. AI Motion & Posture Assistant */}
       <AIAssistantWidget />
 
-      {/* 3. Key Recovery Metrics Bar */}
+      {/* 3. Recovery Metrics */}
       <ProgressCard
         painScore={2}
         romImprovement="+28%"
@@ -160,20 +171,20 @@ export default function DashboardOverviewPage() {
         streakDays={14}
       />
 
-      {/* 3. Two-Column Dashboard Layout */}
+      {/* 4. Two-Column Dashboard Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column (2 cols): Upcoming Session & Daily Exercises */}
         <div className="lg:col-span-2 space-y-8">
           {/* Upcoming Appointment */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <span>🗓️</span>
+              <h2 className="text-base font-bold font-display text-white flex items-center gap-2">
+                <CalendarCheck size={18} className="text-teal-400" />
                 <span>Next Scheduled Session</span>
               </h2>
               <Link
                 href="/dashboard/appointments"
-                className="text-xs text-teal-400 hover:underline font-semibold"
+                className="text-xs text-teal-400 hover:underline font-mono"
               >
                 View All Appointments →
               </Link>
@@ -183,23 +194,23 @@ export default function DashboardOverviewPage() {
           </div>
 
           {/* Today's Exercise Routine */}
-          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+          <div className="glass-card rounded-3xl p-6 border border-white/10">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span>🧘‍♂️</span>
-                  <span>Today's Exercise Plan</span>
+                <h2 className="text-base font-bold font-display text-white flex items-center gap-2">
+                  <Barbell size={18} className="text-teal-400" />
+                  <span>Today&apos;s Exercise Plan</span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-400 font-mono mt-0.5">
                   Target: 3 exercises • 17 minutes total
                 </p>
               </div>
 
               <Link
                 href="/dashboard/exercises"
-                className="text-xs text-teal-400 hover:underline font-semibold"
+                className="text-xs text-teal-400 hover:underline font-mono"
               >
-                Full Exercise Library →
+                Full Library →
               </Link>
             </div>
 
@@ -219,53 +230,56 @@ export default function DashboardOverviewPage() {
         <div className="space-y-8">
           {/* Treatment Plan Summary */}
           <TreatmentPlanCard
-            planName="Lumbar Spine Recovery & Postural Protocol"
+            planName="Lumbar Spine Recovery Protocol"
             progressPercent={65}
             currentWeek={4}
             totalWeeks={8}
-            focusArea="Core Stability & Hamstring Decompression"
-            nextMilestone="Full 90° Forward Flexion without Pain"
+            focusArea="Core Stability & Decompression"
+            nextMilestone="90° Flexion without Pain"
           />
 
-          {/* Assigned Therapist Card */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl">
-            <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
+          {/* Assigned Lead Specialist */}
+          <div className="glass-card rounded-3xl p-6 border border-white/10">
+            <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-4">
               Assigned Lead Specialist
-            </h3>
+            </span>
 
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-400 to-cyan-600 text-slate-950 font-bold text-lg flex items-center justify-center shadow-lg shadow-teal-500/10">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-400 to-cyan-500 text-slate-950 font-bold text-lg flex items-center justify-center font-display shadow-lg shadow-teal-500/10 flex-shrink-0">
                 SJ
               </div>
               <div>
-                <h4 className="text-base font-bold text-white">Dr. Sarah Jenkins, MPT</h4>
-                <p className="text-xs text-teal-400">Senior Musculoskeletal Physiotherapist</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">12+ Yrs Exp • Sports Rehab Lead</p>
+                <div className="flex items-center gap-1">
+                  <h4 className="text-sm font-bold font-display text-white">Dr. Sarah Jenkins, MPT</h4>
+                  <SealCheck size={16} className="text-teal-400" weight="fill" />
+                </div>
+                <p className="text-xs text-teal-300 font-medium">Senior Musculoskeletal Specialist</p>
+                <p className="text-[11px] text-slate-400 font-mono mt-0.5">12+ Yrs Exp • Sports Rehab Lead</p>
               </div>
             </div>
 
-            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-              "Your spinal extension angles have improved by 14 degrees over the past two weeks. Maintain your core bracing during daily sitting."
+            <p className="text-xs text-slate-300 mb-4 leading-relaxed italic bg-[#080c14]/60 p-3 rounded-xl border border-white/5">
+              &ldquo;Your spinal extension angles have improved by 14 degrees over the past two weeks. Maintain your core bracing during daily sitting.&rdquo;
             </p>
 
             <Link
               href="/booking"
-              className="w-full py-2 bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl hover:bg-slate-700 transition-all text-center block"
+              className="w-full py-2.5 bg-[#162035] border border-white/10 text-slate-200 text-xs font-semibold rounded-xl hover:bg-[#1f2b45] transition-all text-center block"
             >
               Message Specialist
             </Link>
           </div>
 
-          {/* Recent Notifications Widget */}
-          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+          {/* Recent Updates */}
+          <div className="glass-card rounded-3xl p-6 border border-white/10">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <span>🔔</span>
+              <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
+                <BellRinging size={16} className="text-teal-400" />
                 <span>Recent Updates</span>
               </h3>
               <Link
                 href="/dashboard/notifications"
-                className="text-xs text-teal-400 hover:underline font-medium"
+                className="text-xs text-teal-400 hover:underline font-mono"
               >
                 See All
               </Link>

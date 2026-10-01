@@ -12,6 +12,11 @@ Thumbs.db
 
 # Node
 node_modules/
+.next/
+
+# Skills tooling
+.agents/
+skills-lock.json
 
 # Python
 __pycache__/

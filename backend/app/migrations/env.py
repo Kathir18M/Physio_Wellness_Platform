@@ -27,6 +27,23 @@ config.set_main_option(
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
+# Import all domain models so Base.metadata collects all table definitions
+import app.domains.admin.models  # noqa: F401
+import app.domains.appointments.models  # noqa: F401
+import app.domains.assessments.models  # noqa: F401
+import app.domains.auth.models  # noqa: F401
+import app.domains.clinics.models  # noqa: F401
+import app.domains.exercises.models  # noqa: F401
+import app.domains.notifications.models  # noqa: F401
+import app.domains.orders.models  # noqa: F401
+import app.domains.payments.models  # noqa: F401
+import app.domains.programs.models  # noqa: F401
+import app.domains.progress.models  # noqa: F401
+import app.domains.subscriptions.models  # noqa: F401
+import app.domains.therapists.models  # noqa: F401
+import app.domains.treatment_plans.models  # noqa: F401
+import app.domains.users.models  # noqa: F401
+
 # Metadata target — populated with Base.metadata from core models
 target_metadata = Base.metadata
 

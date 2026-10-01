@@ -3,9 +3,21 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
 import { useAuth } from "@/context/AuthContext";
 import { ApiRequestError } from "@/lib/api-client";
 import { UserRole } from "@/types/auth";
+import { Button } from "@/components/ui/Button";
+import {
+  FirstAid,
+  User,
+  EnvelopeSimple,
+  Phone,
+  LockKey,
+  ArrowRight,
+  WarningCircle,
+  UserGear,
+} from "@phosphor-icons/react";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -52,12 +64,17 @@ export default function RegisterPage() {
         phone: phone || undefined,
         role,
       });
-      router.push("/");
+
+      if (role === "THERAPIST") {
+        router.push("/therapist/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err) {
       if (err instanceof ApiRequestError) {
         setError(err.message);
       } else {
-        setError("An unexpected error occurred. Please try again.");
+        setError("An unexpected error occurred. Please verify details and try again.");
       }
     } finally {
       setIsSubmitting(false);
@@ -65,142 +82,175 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 px-4 py-12">
-      <div className="w-full max-w-lg space-y-8 rounded-2xl bg-slate-800/80 p-8 shadow-2xl backdrop-blur-xl border border-slate-700/50">
-        <div className="text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 text-white shadow-lg shadow-indigo-500/30">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-            </svg>
+    <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center bg-[#080c14] px-4 py-12 relative overflow-hidden">
+      {/* Background ambient blur */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-cyan-500/[0.05] rounded-full blur-[140px] pointer-events-none" />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-lg space-y-7 glass-card rounded-3xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/10 relative z-10"
+      >
+        <div className="text-center space-y-2">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 text-slate-950 shadow-[0_0_24px_rgba(45,212,191,0.3)]">
+            <FirstAid size={26} weight="bold" />
           </div>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white">Create Account</h2>
-          <p className="mt-2 text-sm text-slate-400">Join Physio Wellness Platform</p>
+          <h1 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight">
+            Create Your Account
+          </h1>
+          <p className="text-xs text-slate-400">
+            Join PhysioWell for evidence-based digital & hybrid rehabilitation
+          </p>
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-4 text-sm text-red-400">
-            {error}
+          <div className="flex items-start gap-2.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 p-4 text-xs text-rose-300">
+            <WarningCircle size={18} className="flex-shrink-0 mt-0.5" weight="fill" />
+            <span>{error}</span>
           </div>
         )}
 
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Account Role Selector */}
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Account Type</label>
-            <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">
+              Select Account Type
+            </label>
+            <div className="grid grid-cols-2 gap-3 bg-[#080c14]/80 p-1.5 rounded-2xl border border-white/10">
               <button
                 type="button"
                 onClick={() => setRole("PATIENT")}
-                className={`flex items-center justify-center rounded-lg py-2.5 text-sm font-semibold border transition-all ${
+                className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-mono font-semibold transition-all ${
                   role === "PATIENT"
-                    ? "bg-indigo-600 border-indigo-500 text-white shadow-md shadow-indigo-600/30"
-                    : "bg-slate-900/60 border-slate-700 text-slate-400 hover:text-white"
+                    ? "bg-teal-500/20 border border-teal-400/40 text-teal-300 shadow-md"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
-                Patient Account
+                <User size={16} />
+                <span>Patient Account</span>
               </button>
               <button
                 type="button"
                 onClick={() => setRole("THERAPIST")}
-                className={`flex items-center justify-center rounded-lg py-2.5 text-sm font-semibold border transition-all ${
+                className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-mono font-semibold transition-all ${
                   role === "THERAPIST"
-                    ? "bg-indigo-600 border-indigo-500 text-white shadow-md shadow-indigo-600/30"
-                    : "bg-slate-900/60 border-slate-700 text-slate-400 hover:text-white"
+                    ? "bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 shadow-md"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
-                Therapist Account
+                <UserGear size={16} />
+                <span>Practitioner Account</span>
               </button>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-300">First Name</label>
+              <label className="block text-xs font-mono font-medium text-slate-300 mb-1 uppercase tracking-wider">
+                First Name
+              </label>
               <input
                 type="text"
                 required
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder="John"
-                className="mt-1 block w-full rounded-lg bg-slate-900/60 border border-slate-700 px-4 py-2.5 text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                placeholder="Sarah"
+                className="block w-full rounded-xl bg-[#080c14]/80 border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-teal-400 focus:outline-none transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300">Last Name</label>
+              <label className="block text-xs font-mono font-medium text-slate-300 mb-1 uppercase tracking-wider">
+                Last Name
+              </label>
               <input
                 type="text"
                 required
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder="Doe"
-                className="mt-1 block w-full rounded-lg bg-slate-900/60 border border-slate-700 px-4 py-2.5 text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                placeholder="Jenkins"
+                className="block w-full rounded-xl bg-[#080c14]/80 border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-teal-400 focus:outline-none transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300">Email Address</label>
+            <label className="block text-xs font-mono font-medium text-slate-300 mb-1 uppercase tracking-wider">
+              Email Address
+            </label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@example.com"
-              className="mt-1 block w-full rounded-lg bg-slate-900/60 border border-slate-700 px-4 py-2.5 text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              placeholder="sarah@example.com"
+              className="block w-full rounded-xl bg-[#080c14]/80 border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-teal-400 focus:outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300">Phone Number (Optional)</label>
+            <label className="block text-xs font-mono font-medium text-slate-300 mb-1 uppercase tracking-wider">
+              Phone Number (Optional)
+            </label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+1 (555) 000-0000"
-              className="mt-1 block w-full rounded-lg bg-slate-900/60 border border-slate-700 px-4 py-2.5 text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              placeholder="+1 (555) 234-5678"
+              className="block w-full rounded-xl bg-[#080c14]/80 border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-teal-400 focus:outline-none transition-all font-mono"
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-300">Password</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Min. 8 characters"
-              className="mt-1 block w-full rounded-lg bg-slate-900/60 border border-slate-700 px-4 py-2.5 text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-mono font-medium text-slate-300 mb-1 uppercase tracking-wider">
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Min. 8 chars"
+                className="block w-full rounded-xl bg-[#080c14]/80 border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-teal-400 focus:outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono font-medium text-slate-300 mb-1 uppercase tracking-wider">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Re-enter password"
+                className="block w-full rounded-xl bg-[#080c14]/80 border border-white/10 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-teal-400 focus:outline-none transition-all"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-300">Confirm Password</label>
-            <input
-              type="password"
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Re-enter password"
-              className="mt-1 block w-full rounded-lg bg-slate-900/60 border border-slate-700 px-4 py-2.5 text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-            />
+          <div className="pt-2">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              isLoading={isSubmitting}
+              className="w-full"
+              rightIcon={<ArrowRight size={16} weight="bold" />}
+            >
+              Complete Account Registration
+            </Button>
           </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex w-full justify-center rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 disabled:opacity-50 transition-all mt-4"
-          >
-            {isSubmitting ? "Creating Account..." : "Complete Registration"}
-          </button>
         </form>
 
-        <div className="text-center text-sm text-slate-400">
-          Already have an account?{" "}
-          <Link href="/auth/login" className="font-semibold text-indigo-400 hover:text-indigo-300">
-            Sign in
+        <div className="pt-3 border-t border-white/[0.06] text-center text-xs text-slate-400">
+          Already registered?{" "}
+          <Link href="/auth/login" className="font-bold text-teal-300 hover:underline">
+            Sign In Here
           </Link>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -1,66 +1,99 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
 import { SERVICES } from "@/data/platformData";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import {
+  VideoCamera,
+  Buildings,
+  Brain,
+  Crosshair,
+  ArrowUpRight,
+  Check,
+} from "@phosphor-icons/react";
 
 export const ServicesSection: React.FC = () => {
+  const iconMap = [
+    <VideoCamera key="1" size={24} className="text-teal-400" />,
+    <Buildings key="2" size={24} className="text-cyan-400" />,
+    <Brain key="3" size={24} className="text-emerald-400" />,
+    <Crosshair key="4" size={24} className="text-indigo-400" />,
+  ];
+
   return (
-    <section className="py-16 lg:py-24 bg-slate-900 border-b border-slate-800">
+    <section className="py-20 bg-[#080c14] border-b border-white/[0.08]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
         <SectionHeading
-          badge="Our Core Services"
-          title="Comprehensive Physiotherapy & Rehabilitation"
-          description="Whether you need immediate virtual care, structured exercise rehabilitation, or hands-on manual therapy."
+          badge="Clinical Care Modalities"
+          title="Complete Digital & Hybrid Rehabilitation Services"
+          description="Combining licensed specialist expertise with real-time motion telemetry to guide your full recovery journey."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {SERVICES.map((service) => (
-            <div
-              key={service.id}
-              className="group rounded-2xl bg-slate-800/60 p-8 border border-slate-700/60 hover:border-teal-500/50 transition-all duration-300 flex flex-col justify-between"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/10 text-teal-400 group-hover:bg-teal-500 group-hover:text-white transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
+        {/* Asymmetric Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          {SERVICES.map((service, idx) => {
+            const colSpans = [
+              "md:col-span-7",
+              "md:col-span-5",
+              "md:col-span-5",
+              "md:col-span-7",
+            ];
+
+            return (
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                className={`glass-card glass-card-hover rounded-3xl p-6 sm:p-8 flex flex-col justify-between ${colSpans[idx % 4]}`}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="p-3 rounded-2xl bg-[#121b2d] border border-white/10">
+                      {iconMap[idx % iconMap.length]}
+                    </div>
+                    <span className="text-xs font-mono text-teal-400/80 bg-teal-500/10 px-2.5 py-1 rounded-full border border-teal-500/20">
+                      {service.duration} Session
+                    </span>
                   </div>
-                  <span className="text-xs font-mono font-medium text-slate-400 bg-slate-900/60 px-3 py-1 rounded-full border border-slate-700">
-                    {service.duration}
-                  </span>
+
+                  <h3 className="text-xl sm:text-2xl font-bold font-display text-white">
+                    {service.title}
+                  </h3>
+
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    {service.shortDescription}
+                  </p>
+
+                  {/* Feature Checkpoints */}
+                  {service.benefits && (
+                    <ul className="space-y-2 pt-2 border-t border-white/10">
+                      {service.benefits.map((benefit, fIdx) => (
+                        <li key={fIdx} className="flex items-center gap-2 text-xs text-slate-300">
+                          <Check size={14} className="text-teal-400 flex-shrink-0" weight="bold" />
+                          <span>{benefit}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
 
-                <h3 className="text-xl font-bold text-white group-hover:text-teal-400 transition-colors">
-                  {service.title}
-                </h3>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  {service.fullDescription}
-                </p>
-
-                <div className="pt-2">
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Key Benefits:</h4>
-                  <ul className="space-y-1.5">
-                    {service.benefits.map((benefit, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-xs text-slate-300">
-                        <span className="text-teal-400">✓</span>
-                        {benefit}
-                      </li>
-                    ))}
-                  </ul>
+                <div className="pt-6 mt-4 flex items-center justify-between border-t border-white/[0.06]">
+                  <span className="text-xs font-mono text-slate-400">Licensed Practitioner Guided</span>
+                  <Link
+                    href={`/services#${service.slug}`}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-teal-300 hover:text-white transition-colors"
+                  >
+                    <span>Service Details</span>
+                    <ArrowUpRight size={14} weight="bold" />
+                  </Link>
                 </div>
-              </div>
-
-              <div className="pt-6 mt-6 border-t border-slate-700/40">
-                <Link
-                  href="/services"
-                  className="inline-flex items-center text-sm font-semibold text-teal-400 hover:text-teal-300 group-hover:translate-x-1 transition-all"
-                >
-                  Learn More About Service →
-                </Link>
-              </div>
-            </div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

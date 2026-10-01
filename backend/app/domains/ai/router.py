@@ -17,6 +17,7 @@ from app.integrations.ai.service import (
     PostureAnalysisResult,
     ProgressSummaryResult,
 )
+from app.domains.progress.repository import ProgressRepository
 from app.shared.dependencies.auth import CurrentUser
 from app.shared.dependencies.database import DbSession
 
@@ -76,16 +77,26 @@ async def generate_progress_summary(
 ) -> ProgressSummaryResult:
     """Generate AI-assisted weekly progress summary for patient recovery tracking."""
     ai_service = AIService()
+    progress_repo = ProgressRepository(db)
+    records = await progress_repo.list_patient_history(current_user.id, limit=7)
+
+    weekly_records = [
+        {
+            "recorded_at": r.recorded_at.isoformat(),
+            "pain_level": r.pain_level,
+            "mobility_score": r.mobility_score,
+            "notes": r.notes or "",
+        }
+        for r in records
+    ]
+
+    avg_pain = sum(r.pain_level for r in records) / len(records) if records else 0.0
     metrics = {
         "user_id": str(current_user.id),
-        "exercise_completion_rate": 85.0,
-        "pain_trend": "IMPROVING",
+        "total_records_this_week": len(records),
+        "avg_pain_level": round(avg_pain, 2),
+        "pain_trend": "IMPROVING" if (records and records[0].pain_level <= avg_pain) else "STABLE",
     }
-    weekly_records = [
-        {"day": "Mon", "completed": True, "pain_score": 5},
-        {"day": "Wed", "completed": True, "pain_score": 4},
-        {"day": "Fri", "completed": True, "pain_score": 3},
-    ]
 
     return await ai_service.generate_progress_summary(
         metrics=metrics,

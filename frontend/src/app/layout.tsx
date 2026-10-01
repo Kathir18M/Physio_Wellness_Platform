@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Header, Footer } from "@/components/layout";
 import { AuthProvider } from "@/context/AuthContext";
+
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const inter = Inter({
   variable: "--font-inter",
@@ -10,35 +16,46 @@ const inter = Inter({
   display: "swap",
 });
 
+const mono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "PhysioWell — Wellness & Physiotherapy Platform",
+    default: "PhysioWell — AI-Assisted Digital & Hybrid Physiotherapy Platform",
     template: "%s | PhysioWell",
   },
   description:
-    "Your digital partner for personalized physiotherapy and wellness care. Evidence-based recovery guided by licensed professionals.",
+    "Clinical-grade physical therapy, biomechanical motion assessment, and personalized recovery roadmaps guided by licensed specialists.",
   keywords: [
     "physiotherapy",
     "wellness",
     "rehabilitation",
     "telehealth",
     "physical therapy",
+    "biomechanics",
+    "posture correction",
   ],
   authors: [{ name: "PhysioWell" }],
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "PhysioWell",
-    title: "PhysioWell — Wellness & Physiotherapy Platform",
+    title: "PhysioWell — Digital & Hybrid Physiotherapy Platform",
     description:
-      "Your digital partner for personalized physiotherapy and wellness care.",
+      "Evidence-based physical therapy and biomechanical movement analysis.",
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+    <html
+      lang="en"
+      className={`${outfit.variable} ${inter.variable} ${mono.variable} dark h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col bg-[#080c14] text-slate-100 selection:bg-teal-500/30 selection:text-white">
         <AuthProvider>
           <Header />
           <main className="flex-1">{children}</main>
@@ -48,3 +65,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+
